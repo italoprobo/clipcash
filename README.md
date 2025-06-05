@@ -1,24 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ClipCash - Página de Vendas
 
-## Getting Started
+Este é o projeto da página de vendas do ClipCash, uma plataforma que permite ganhar dinheiro avaliando vídeos.
 
-First, run the development server:
+## Tecnologias Utilizadas
 
+- Next.js 14
+- React
+- Tailwind CSS
+- Framer Motion
+- Shadcn/ui
+
+## Como Rodar Localmente
+
+1. Clone o repositório
+2. Instale as dependências:
+```bash
+npm install
+```
+3. Rode o servidor de desenvolvimento:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Este projeto está configurado para deploy automático no Vercel. Para fazer o deploy:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Crie uma conta no [Vercel](https://vercel.com)
+2. Instale o Vercel CLI:
+```bash
+npm i -g vercel
+```
+3. Faça login no Vercel:
+```bash
+vercel login
+```
+4. Deploy o projeto:
+```bash
+vercel
+```
+
+## Estrutura de Arquivos
+
+- `/app` - Páginas e componentes principais
+- `/public` - Arquivos estáticos (imagens, vídeos)
+- `/components` - Componentes reutilizáveis
 
 ## Learn More
 
