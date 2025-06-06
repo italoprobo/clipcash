@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button"
 import { Shield, Crown, Play, Users, CheckCircle, Lock, ChevronRight } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { capitalizeFirstLetter } from "@/lib/utils"
 
-export default function SalesOnboardingPage() {
+function MainContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const userName = capitalizeFirstLetter(searchParams.get('name') || 'Avaliador')
@@ -306,5 +306,20 @@ export default function SalesOnboardingPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SalesOnboardingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#c6426b] border-r-2 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    }>
+      <MainContent />
+    </Suspense>
   )
 } 
