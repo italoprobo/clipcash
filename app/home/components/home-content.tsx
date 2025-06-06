@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { VIDEOS_DATA } from "@/lib/constants"
 import type { VideoData } from "@/lib/constants"
+import { capitalizeFirstLetter } from "@/lib/utils"
 import { toast } from "sonner"
 import { 
   User,
@@ -24,7 +25,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Lock
 } from "lucide-react"
 import confetti from 'canvas-confetti'
 
@@ -84,6 +86,28 @@ const storeProgress = (data: Omit<VideoProgress, 'timestamp'>) => {
   }))
 }
 
+// Funções para salvar e carregar dados gerais
+const getStoredGeneralData = () => {
+  if (typeof window === 'undefined') return null
+  const stored = localStorage.getItem('generalProgress')
+  if (!stored) return null
+  try {
+    return JSON.parse(stored)
+  } catch (e) {
+    return null
+  }
+}
+
+const storeGeneralData = (data: { 
+  balance: number; 
+  todayEarnings: number; 
+  videosCompleted: number;
+  currentVideoIndex: number;
+}) => {
+  if (typeof window === 'undefined') return
+  localStorage.setItem('generalProgress', JSON.stringify(data))
+}
+
 const triggerConfetti = () => {
   // Toca o som de celebração
   const audio = new Audio('/sounds/song.mp3')
@@ -134,8 +158,77 @@ const triggerConfetti = () => {
   })
 }
 
+function WithdrawModal({ isOpen, onClose, balance }: { isOpen: boolean; onClose: () => void; balance: number }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 max-w-lg w-full">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Seu saldo: R$ {balance.toFixed(2)}</h3>
+            <p className="text-sm text-gray-600 mt-1">Desbloqueie agora mesmo seu saque!</p>
+          </div>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            ✕
+          </button>
+        </div>
+
+        <div className="mb-6">
+          <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 flex items-start">
+            <Lock className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="font-medium">Conta não verificada</p>
+              <p className="text-sm mt-1">Para realizar saques, você precisa ter uma conta verificada com acesso VIP.</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-gray-900 font-medium mb-3">Com a conta VIP você pode:</h4>
+            <ul className="space-y-2">
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                Sacar seus ganhos a qualquer momento
+              </li>
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                Ganhar até R$ 500 por mês
+              </li>
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                Acesso a mais de 100 vídeos premium
+              </li>
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                Suporte prioritário via WhatsApp
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <Button 
+            className="w-full bg-[#c6426b] hover:bg-[#b33d61] text-white h-14 text-lg"
+            onClick={() => window.location.href = '/catalogo'}
+          >
+            Desbloquear Saque Agora →
+          </Button>
+          <button 
+            className="w-full text-gray-500 hover:text-gray-700 text-sm"
+            onClick={onClose}
+          >
+            Continuar avaliando vídeos gratuitos
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const HomeContent = () => {
   const [mounted, setMounted] = useState(false)
+  const [userName, setUserName] = useState('Avaliador')
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
   
   // Estados iniciais sem localStorage
   const [balance, setBalance] = useState(0)
@@ -151,16 +244,39 @@ const HomeContent = () => {
   const [currentTime, setCurrentTime] = useState(0)
   const playerRef = useRef<any>(null)
   const progressInterval = useRef<NodeJS.Timeout | null>(null)
-  const timeInterval = useRef<NodeJS.Timeout | null>(null)
 
   // Efeito para carregar dados do localStorage após a montagem
   useEffect(() => {
     setMounted(true)
+    
+    // Carrega os dados gerais primeiro
+    const generalData = getStoredGeneralData()
+    if (generalData) {
+      setBalance(generalData.balance)
+      setTodayEarnings(generalData.todayEarnings)
+      setVideosCompleted(generalData.videosCompleted)
+      setCurrentVideoIndex(generalData.currentVideoIndex)
+    }
+
+    // Depois carrega o progresso do vídeo atual
     const storedProgress = getStoredProgress()
     if (storedProgress) {
-      setCurrentVideoIndex(storedProgress.videoIndex)
-      setWatchProgress(storedProgress.progress)
-      setCurrentTime(storedProgress.time)
+      const progress = storedProgress.progress
+      setWatchProgress(progress)
+      // Calcula o tempo baseado no progresso para manter sincronizado
+      const calculatedTime = (progress / 100) * TOTAL_VIDEO_TIME
+      setCurrentTime(calculatedTime)
+      
+      if (progress >= 100) {
+        setCanEvaluate(true)
+      }
+    }
+
+    // Carrega o nome do usuário da URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const nameFromUrl = urlParams.get('name')
+    if (nameFromUrl) {
+      setUserName(capitalizeFirstLetter(nameFromUrl))
     }
   }, [])
 
@@ -171,7 +287,6 @@ const HomeContent = () => {
 
   const cleanupPlayer = () => {
     stopProgressTimer()
-    stopTimeTimer()
     try {
       // Primeiro, pausamos o vídeo se possível
       if (playerRef.current?.pauseVideo) {
@@ -192,14 +307,19 @@ const HomeContent = () => {
     if (watchProgress < 100) {
       progressInterval.current = setInterval(() => {
         setWatchProgress(prev => {
-          const increment = (100 / TOTAL_VIDEO_TIME / 10) // 0.33% a cada 100ms
-          const newProgress = Math.min(prev + increment, 100)
+          // Ajustando o incremento para subir mais suavemente
+          const increment = (100 / TOTAL_VIDEO_TIME) // Incremento por segundo
+          const newProgress = Math.min(prev + (increment / 10), 100) // Dividido por 10 pois o intervalo é 100ms
           
           if (mounted) {
+            // Calcula o tempo baseado no progresso
+            const calculatedTime = (newProgress / 100) * TOTAL_VIDEO_TIME
+            setCurrentTime(calculatedTime)
+            
             storeProgress({
               videoIndex: currentVideoIndex,
               progress: newProgress,
-              time: currentTime
+              time: calculatedTime
             })
           }
           
@@ -223,32 +343,6 @@ const HomeContent = () => {
     }
   }
 
-  const startTimeTimer = () => {
-    if (timeInterval.current) {
-      clearInterval(timeInterval.current)
-    }
-    timeInterval.current = setInterval(() => {
-      setCurrentTime(prev => {
-        if (prev >= TOTAL_VIDEO_TIME) {
-          stopTimeTimer()
-          stopProgressTimer()
-          setWatchProgress(100)
-          setCanEvaluate(true)
-          return TOTAL_VIDEO_TIME
-        }
-        const newTime = Math.min(Math.round((prev + 0.1) * 10) / 10, TOTAL_VIDEO_TIME)
-        return newTime
-      })
-    }, 100)
-  }
-
-  const stopTimeTimer = () => {
-    if (timeInterval.current) {
-      clearInterval(timeInterval.current)
-      timeInterval.current = null
-    }
-  }
-
   const handleEvaluation = async (approved: boolean) => {
     if (!currentVideo || !canEvaluate) {
       if (!canEvaluate) {
@@ -264,9 +358,14 @@ const HomeContent = () => {
     localStorage.removeItem('videoProgress')
 
     let message = `Vídeo "${currentVideo.title}" `
+    let newBalance = balance
+    let newTodayEarnings = todayEarnings
+    
     if (approved) {
-      setBalance((prev) => prev + currentVideo.reward)
-      setTodayEarnings((prev) => prev + currentVideo.reward)
+      newBalance = balance + currentVideo.reward
+      newTodayEarnings = todayEarnings + currentVideo.reward
+      setBalance(newBalance)
+      setTodayEarnings(newTodayEarnings)
       message += "aprovado!"
       toast.success(message, { description: `+ R$ ${currentVideo.reward.toFixed(2)} adicionado ao saldo.` })
       // Dispara o confete quando aprovar
@@ -277,7 +376,20 @@ const HomeContent = () => {
     }
 
     // Atualizamos os estados
-    setVideosCompleted((prev) => prev + 1)
+    const newVideosCompleted = videosCompleted + 1
+    setVideosCompleted(newVideosCompleted)
+    
+    // Calculamos o próximo índice do vídeo
+    const nextVideoIndex = currentVideoIndex < VIDEOS_DATA.length - 1 ? currentVideoIndex + 1 : currentVideoIndex
+    
+    // Salva os dados gerais com o próximo índice
+    storeGeneralData({
+      balance: newBalance,
+      todayEarnings: newTodayEarnings,
+      videosCompleted: newVideosCompleted,
+      currentVideoIndex: nextVideoIndex
+    })
+
     setWatchProgress(0)
     setCurrentTime(0)
     setCanEvaluate(false)
@@ -286,7 +398,7 @@ const HomeContent = () => {
 
     // Mudamos para o próximo vídeo
     if (currentVideoIndex < VIDEOS_DATA.length - 1) {
-      setCurrentVideoIndex((prev) => prev + 1)
+      setCurrentVideoIndex(nextVideoIndex)
     } else {
       setShowCompletionMessage(true)
     }
@@ -326,7 +438,6 @@ const HomeContent = () => {
               event.target.playVideo();
               setIsPlaying(true);
               startProgressTimer();
-              startTimeTimer();
             },
             onStateChange: (event: { data: number }) => {
               const isVideoPlaying = event.data === window.YT.PlayerState.PLAYING;
@@ -334,10 +445,8 @@ const HomeContent = () => {
               
               if (isVideoPlaying) {
                 startProgressTimer();
-                startTimeTimer();
               } else {
                 stopProgressTimer();
-                stopTimeTimer();
               }
             },
             onError: (event: { data: any }) => {
@@ -376,7 +485,6 @@ const HomeContent = () => {
 
     return () => {
       stopProgressTimer();
-      stopTimeTimer();
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
@@ -417,6 +525,14 @@ const HomeContent = () => {
     }
   }, [watchProgress])
 
+  // Limpa os dados gerais quando completar todos os vídeos
+  useEffect(() => {
+    if (showCompletionMessage) {
+      localStorage.removeItem('generalProgress')
+      localStorage.removeItem('videoProgress')
+    }
+  }, [showCompletionMessage])
+
   // Efeito para lidar com visibilidade da página
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -424,13 +540,11 @@ const HomeContent = () => {
         // Página perdeu foco, salvar estado atual
         if (isPlaying) {
           stopProgressTimer()
-          stopTimeTimer()
         }
       } else {
         // Página ganhou foco, restaurar estado
         if (isPlaying) {
           startProgressTimer()
-          startTimeTimer()
         }
       }
     }
@@ -447,7 +561,6 @@ const HomeContent = () => {
       setWatchProgress(100)
       setCanEvaluate(true)
       stopProgressTimer()
-      stopTimeTimer()
     }
   }, [currentTime])
 
@@ -465,7 +578,7 @@ const HomeContent = () => {
             <span className="font-bold text-lg text-black">ClipCash</span>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-gray-600">{currentVideo?.email || "user@email.com"}</span>
+            <span className="text-gray-600">{userName}</span>
             <div className="flex items-center space-x-1">
               <span className="text-[#c6426b] font-medium">R$ {balance.toFixed(2)}</span>
             </div>
@@ -483,7 +596,7 @@ const HomeContent = () => {
                 <p className="text-3xl font-bold text-white">R$ {balance.toFixed(2)}</p>
                 <Button 
                   className="bg-white text-[#c6426b] hover:bg-white/90 px-6 py-2 text-sm font-medium"
-                  onClick={() => alert("Funcionalidade 'Sacar' em desenvolvimento!")}
+                  onClick={() => setIsWithdrawModalOpen(true)}
                 >
                   Sacar
                 </Button>
@@ -683,90 +796,47 @@ const HomeContent = () => {
 
             <div className="flex flex-col items-center p-6 rounded-xl bg-white hover:bg-gray-50 border border-gray-100">
               <div className={`w-16 h-16 rounded-full bg-[#c6426b]/10 flex items-center justify-center mb-3`}>
-                <ThumbsUp className="h-8 w-8 text-[#c6426b]" />
+                <Laptop className="h-8 w-8 text-[#c6426b]" />
               </div>
               <span className="text-base font-medium text-gray-900 mb-2">Passo 2</span>
-              <span className="text-sm text-gray-600 text-center">Avalie o conteúdo</span>
+              <span className="text-sm text-gray-600 text-center">Assista o vídeo até o final</span>
             </div>
 
             <div className="flex flex-col items-center p-6 rounded-xl bg-white hover:bg-gray-50 border border-gray-100">
               <div className={`w-16 h-16 rounded-full bg-[#c6426b]/10 flex items-center justify-center mb-3`}>
-                <DollarSign className="h-8 w-8 text-[#c6426b]" />
+                <Dumbbell className="h-8 w-8 text-[#c6426b]" />
               </div>
               <span className="text-base font-medium text-gray-900 mb-2">Passo 3</span>
-              <span className="text-sm text-gray-600 text-center">Ganhe dinheiro instantaneamente</span>
+              <span className="text-sm text-gray-600 text-center">Avalie o vídeo</span>
             </div>
 
             <div className="flex flex-col items-center p-6 rounded-xl bg-white hover:bg-gray-50 border border-gray-100">
               <div className={`w-16 h-16 rounded-full bg-[#c6426b]/10 flex items-center justify-center mb-3`}>
-                <WalletCards className="h-8 w-8 text-[#c6426b]" />
+                <Utensils className="h-8 w-8 text-[#c6426b]" />
               </div>
               <span className="text-base font-medium text-gray-900 mb-2">Passo 4</span>
-              <span className="text-sm text-gray-600 text-center">Saque seu dinheiro quando quiser</span>
+              <span className="text-sm text-gray-600 text-center">Receba seu bônus</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navegação */}
-      <div className="max-w-screen-xl mx-auto w-full px-4 mt-6 mb-6">
-        <nav className="bg-white rounded-xl p-3 flex justify-around">
-          <button 
-            className={`flex flex-col items-center p-4 rounded-lg min-w-[80px] ${currentTab === 'inicio' ? 'bg-[#c6426b]/10 text-[#c6426b]' : 'text-gray-600 hover:bg-gray-50'}`}
-            onClick={() => setCurrentTab('inicio')}
-          >
-            <Home className="h-6 w-6 mb-2" />
-            <span className="text-sm font-medium">Início</span>
-          </button>
-          <button 
-            className={`flex flex-col items-center p-4 rounded-lg min-w-[80px] ${currentTab === 'explorar' ? 'bg-[#c6426b]/10 text-[#c6426b]' : 'text-gray-600 hover:bg-gray-50'}`}
-            onClick={() => setCurrentTab('explorar')}
-          >
-            <Search className="h-6 w-6 mb-2" />
-            <span className="text-sm font-medium">Explorar</span>
-          </button>
-          <button 
-            className={`flex flex-col items-center p-4 rounded-lg min-w-[80px] ${currentTab === 'ganhos' ? 'bg-[#c6426b]/10 text-[#c6426b]' : 'text-gray-600 hover:bg-gray-50'}`}
-            onClick={() => setCurrentTab('ganhos')}
-          >
-            <WalletCards className="h-6 w-6 mb-2" />
-            <span className="text-sm font-medium">Ganhos</span>
-          </button>
-          <button 
-            className={`flex flex-col items-center p-4 rounded-lg min-w-[80px] ${currentTab === 'perfil' ? 'bg-[#c6426b]/10 text-[#c6426b]' : 'text-gray-600 hover:bg-gray-50'}`}
-            onClick={() => setCurrentTab('perfil')}
-          >
-            <User className="h-6 w-6 mb-2" />
-            <span className="text-sm font-medium">Perfil</span>
-          </button>
-        </nav>
+      {/* Footer */}
+      <div className="bg-white py-8 text-center text-gray-600 text-sm">
+        <div className="max-w-screen-xl mx-auto px-4">
+          © 2024 ClipCash. Transformando tempo de tela em oportunidade.
+        </div>
       </div>
 
-      {currentTab !== 'inicio' && (
-        // Área Restrita para outras abas
-        <div className="max-w-screen-xl mx-auto w-full px-4 mt-2">
-          <div className="bg-white rounded-xl p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <AlertTriangle className="h-16 w-16 text-orange-500" />
-            </div>
-            <h2 className="text-2xl font-bold text-black mb-4">Área Restrita</h2>
-            <p className="text-gray-600 mb-4">
-              Conclua as 5 avaliações na aba Início para desbloquear esta área.
-            </p>
-            <p className="text-sm text-gray-500">
-              Progresso atual: {videosCompleted}/5 avaliações concluídas
-            </p>
-            <Progress 
-              value={(videosCompleted / 5) * 100} 
-              className="h-2 [&>div]:bg-[#c6426b] bg-gray-100 mt-4" 
-            />
-          </div>
-        </div>
-      )}
+      <WithdrawModal 
+        isOpen={isWithdrawModalOpen} 
+        onClose={() => setIsWithdrawModalOpen(false)}
+        balance={balance}
+      />
     </div>
     )}
     </>
   )
 }
 
-export default HomeContent 
+export default HomeContent

@@ -21,7 +21,9 @@ import {
   Utensils,
   Plane,
   Heart,
-  ChevronRight
+  ChevronRight,
+  MessageSquare,
+  User
 } from "lucide-react"
 
 export const ICONS = {
@@ -46,7 +48,8 @@ export const ICONS = {
   Utensils,
   Plane,
   Heart,
-  ChevronRight
+  ChevronRight,
+  MessageSquare
 }
 
 export type VideoData = {
@@ -140,6 +143,7 @@ export type OnboardingStep = {
   description: string
   icon: LucideIcon
   buttonText: string
+  requiresInput?: boolean
 }
 
 export const ONBOARDING_STEPS_CONFIG: OnboardingStep[] = [
@@ -159,6 +163,13 @@ export const ONBOARDING_STEPS_CONFIG: OnboardingStep[] = [
     title: "Receba recompensas",
     description: "Ganhe dinheiro real por cada avaliação. Saque a qualquer momento para sua conta.",
     icon: CreditCard,
-    buttonText: "Começar agora"
+    buttonText: "Próximo"
+  },
+  {
+    title: "Comece Agora",
+    description: "Digite seu nome para iniciar sua jornada como avaliador oficial",
+    icon: User,
+    buttonText: "Verificar Elegibilidade",
+    requiresInput: true
   }
 ] 

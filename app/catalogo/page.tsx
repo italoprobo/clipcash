@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Target, Eye, Wallet, Star } from "lucide-react"
+import { Target, Eye, Wallet, Star, DollarSign } from "lucide-react"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -240,86 +240,88 @@ function PlanModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl p-6 max-w-lg w-full">
         <div className="flex justify-between items-center mb-4">
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">Espere! Temos uma oferta especial</h3>
-            <p className="text-sm text-gray-600 mt-1">Upgrade para Mini Premium com 50% de desconto!</p>
-          </div>
+          <h3 className="text-xl font-bold text-gray-900">Oferta Especial</h3>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             ✕
           </button>
         </div>
 
-        <div className="mb-6">
-          <div className="flex items-end gap-2 mb-2">
-            <span className="text-4xl font-bold text-[#c6426b]">R$ 29,90</span>
-            <span className="text-gray-400 mb-1 line-through">R$ 47,00</span>
+        <div className="mb-6 space-y-6">
+          <div className="flex items-center gap-2">
+            <span className="text-3xl font-bold text-[#c6426b]">R$ 29,90</span>
+            <span className="text-gray-400 line-through">R$ 47,00</span>
             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-full">-36% OFF</span>
           </div>
-          <p className="text-sm text-gray-600 mb-6">Oferta especial por tempo limitado!</p>
 
-          <div className="space-y-6">
-            <div>
-              <h4 className="text-gray-900 font-medium mb-3">Benefícios exclusivos do Mini Premium:</h4>
-              <ul className="space-y-2">
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  100 vídeos para avaliar (2x mais que o básico)
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Ganhos de até R$ 800/mês
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Suporte prioritário por email
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Acesso por 4 meses
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Vídeos premium selecionados
-                </li>
-              </ul>
+          <div className="bg-[#c6426b]/10 p-3 rounded-lg mb-6 border border-[#c6426b]/20">
+            <div className="flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-[#c6426b]" />
+              <span className="text-[#c6426b] font-medium">Potencial de Ganhos:</span>
             </div>
+            <div className="mt-1">
+              <span className="text-2xl font-bold text-[#c6426b]">R$ 600-800</span>
+              <span className="text-[#c6426b] font-medium">/mês</span>
+            </div>
+          </div>
 
-            <div>
-              <h4 className="text-gray-900 font-medium mb-3">Garantias do Mini Premium:</h4>
-              <ul className="space-y-2">
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  10 dias de garantia
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Pagamento seguro via PIX
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Sem mensalidades ou taxas ocultas
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Suporte via WhatsApp
-                </li>
-              </ul>
+          <div>
+            <h4 className="text-gray-900 font-medium mb-3">Você receberá:</h4>
+            <ul className="space-y-2">
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                100 vídeos para avaliar
+              </li>
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                Potencial de R$ 600-800/mês
+              </li>
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                Suporte prioritário
+              </li>
+              <li className="flex items-center text-gray-700">
+                <span className="text-green-500 mr-2">✓</span>
+                Acesso por 4 meses
+              </li>
+            </ul>
+          </div>
+
+          {/* Seção de Bônus */}
+          <div className="bg-[#c6426b]/5 rounded-lg p-4 border-2 border-[#c6426b] border-dashed">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="bg-[#c6426b] text-white text-xs font-bold px-2 py-1 rounded-full">2 BÔNUS GRÁTIS</span>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-start gap-2">
+                <span className="text-[#c6426b] font-bold text-lg">✨</span>
+                <div>
+                  <h4 className="font-medium text-gray-900">Vídeos: Como Usar o APP</h4>
+                  <p className="text-xs text-gray-600">Treinamento com estratégias para maximizar seus ganhos.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-[#c6426b] font-bold text-lg">💰</span>
+                <div>
+                  <h4 className="font-medium text-gray-900">Faça Dinheiro com Shorts/Reels</h4>
+                  <p className="text-xs text-gray-600">Aumente seus lucros com conteúdos curtos.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="space-y-3">
           <Button 
-            className="w-full bg-[#c6426b] hover:bg-[#b33d61] text-white h-14 text-lg"
+            className="w-full bg-[#c6426b] hover:bg-[#b33d61] text-white h-12 text-base"
             onClick={() => window.open('https://pay.cakto.com.br/by3jta9', '_blank')}
           >
-            Sim! Quero aproveitar esta oferta →
+            Quero aproveitar esta oferta →
           </Button>
           <button 
             className="w-full text-gray-500 hover:text-gray-700 text-sm"
             onClick={() => window.open('https://pay.cakto.com.br/38qwk92_420216', '_blank')}
           >
-            Não, prefiro o plano básico com menos benefícios
+            Continuar com plano básico
           </button>
         </div>
       </div>
@@ -567,6 +569,16 @@ export default function CatalogoPage() {
                 <span className="text-4xl font-bold text-gray-900">R$ 19,90</span>
                 <span className="text-gray-600 mb-1">pagamento único</span>
               </div>
+              <div className="bg-green-50 p-3 rounded-lg mb-6 border border-green-100">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-green-600" />
+                  <span className="text-green-600 font-medium">Potencial de Ganhos:</span>
+                </div>
+                <div className="mt-1">
+                  <span className="text-2xl font-bold text-green-600">R$ 300-500</span>
+                  <span className="text-green-600 font-medium">/mês</span>
+                </div>
+              </div>
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
@@ -574,7 +586,7 @@ export default function CatalogoPage() {
                 </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
-                  Ganhos de até R$ 500/mês
+                  Potencial de R$ 300-500/mês
                 </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
@@ -584,6 +596,23 @@ export default function CatalogoPage() {
                   <span className="text-green-500 mr-2">✓</span>
                   Acesso por 3 meses
                 </li>
+
+                {/* Seção de Bônus */}
+                <div className="mt-6 bg-[#c6426b]/5 rounded-lg p-4 border-2 border-[#c6426b] border-dashed">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="bg-[#c6426b] text-white text-xs font-bold px-2 py-1 rounded-full">BÔNUS GRÁTIS</span>
+                    <span className="text-[#c6426b] font-medium">Acesso Imediato</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-[#c6426b] font-bold text-lg">✨</span>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Vídeos Completos: Como Usar o APP</h4>
+                        <p className="text-sm text-gray-600">Receba gratuitamente nosso treinamento exclusivo com todas as estratégias para maximizar seus ganhos.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </ul>
               <Button 
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white"
@@ -603,53 +632,74 @@ export default function CatalogoPage() {
                 <span className="text-4xl font-bold text-blue-500">R$ 47,00</span>
                 <span className="text-gray-600 mb-1">pagamento único</span>
               </div>
+              <div className="bg-blue-50 p-3 rounded-lg mb-6 border border-blue-100">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-blue-600" />
+                  <span className="text-blue-600 font-medium">Potencial de Ganhos:</span>
+                </div>
+                <div className="mt-1">
+                  <span className="text-2xl font-bold text-blue-600">R$ 1.200-1.500</span>
+                  <span className="text-blue-600 font-medium">/mês</span>
+                </div>
+              </div>
               <ul className="space-y-4 mb-8">
-                <li className="text-gray-900 font-medium mb-2">Acesso completo inclui:</li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Plataforma web e mobile
-                </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
                   Catálogo ilimitado de vídeos
                 </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
-                  Sistema de pagamento automático
+                  Potencial de R$ 1.200-1.500/mês
                 </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
-                  Suporte técnico prioritário
+                  Suporte prioritário via WhatsApp
                 </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
-                  Relatórios detalhados de ganhos
+                  Acesso antecipado a novos vídeos
                 </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
-                  Ganhos de até R$ 1500/mês
-                </li>
-                <li className="text-gray-900 font-medium mt-6 mb-2">Garantias incluídas:</li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  7 dias de garantia total
+                  Vídeos premium melhor remunerados
                 </li>
                 <li className="flex items-center text-gray-700">
                   <span className="text-green-500 mr-2">✓</span>
-                  Pagamentos via PIX
+                  Prioridade na fila de pagamentos
                 </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Sem taxas ou mensalidades
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Acesso imediato após pagamento
-                </li>
-                <li className="flex items-center text-gray-700">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Suporte via WhatsApp
-                </li>
+
+                {/* Seção de Bônus */}
+                <div className="mt-4">
+                  <div className="bg-[#c6426b]/5 rounded-lg p-4 border-2 border-[#c6426b] border-dashed">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="bg-[#c6426b] text-white text-xs font-bold px-2 py-1 rounded-full">3 BÔNUS EXCLUSIVOS</span>
+                      <span className="text-[#c6426b] text-xs font-medium">Valor: R$ 147,00</span>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[#c6426b] font-bold text-lg">✨</span>
+                        <div>
+                          <p className="text-sm text-gray-700 font-medium">Vídeos: Como Usar o APP</p>
+                          <p className="text-xs text-gray-500">Domine todas as funcionalidades</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-[#c6426b] font-bold text-lg">💰</span>
+                        <div>
+                          <p className="text-sm text-gray-700 font-medium">Faça Dinheiro com Shorts/Reels</p>
+                          <p className="text-xs text-gray-500">Estratégias para conteúdo viral</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 bg-blue-50 p-2 rounded-lg">
+                        <span className="text-blue-500 font-bold text-lg">🚀</span>
+                        <div>
+                          <p className="text-sm text-gray-700 font-medium">NOVO: Potencialize com Notícias</p>
+                          <p className="text-xs text-gray-500">Exclusivo para membros Super Premium</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </ul>
               <Button 
                 className="w-full bg-[#c6426b] hover:bg-[#b33d61] text-white"
