@@ -55,6 +55,19 @@ export default function RootLayout({
           data-utmify-prevent-subids="true"
           strategy="afterInteractive"
         />
+
+        <script 
+          type="text/javascript" 
+          dangerouslySetInnerHTML={{
+            __html: `
+              var s=document.createElement("script");
+              s.src="https://scripts.converteai.net/lib/js/smartplayer/v1/sdk.min.js";
+              s.setAttribute("data-id", "68479b77ddec08ed47550ea8");
+              s.async=!0;
+              document.head.appendChild(s);
+            `
+          }}
+        />
       </head>
       <body suppressHydrationWarning className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>

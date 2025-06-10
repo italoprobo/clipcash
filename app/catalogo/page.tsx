@@ -492,18 +492,6 @@ export default function CatalogoPage() {
         </div>
       </div>
 
-      {/* Depoimentos */}
-      <div className="py-16 bg-white">
-        <div className="max-w-screen-xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Resultados que falam por si</h2>
-            <p className="text-gray-600 mt-2">Pessoas reais, ganhos reais, histórias reais.</p>
-          </div>
-
-          <TestimonialsCarousel />
-        </div>
-      </div>
-
       {/* Vídeos de Validação */}
       <div id="resultados-reais" className="py-16 bg-[#f5f5f5]">
         <div className="max-w-screen-xl mx-auto px-4">
@@ -512,43 +500,79 @@ export default function CatalogoPage() {
             <p className="text-gray-600 mt-2">Usuários reais mostrando seus ganhos na plataforma</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-8">
+            {/* VRTub Video */}
             <div className="bg-white rounded-xl overflow-hidden shadow-lg">
               <div className="aspect-video">
-                <video 
-                  className="w-full h-full object-cover"
-                  controls
-                  poster="/image/mulher.png"
-                >
-                  <source src="/videos/A_hyperrealistic_video_202506031816_kdopa.mp4" type="video/mp4" />
-                  Seu navegador não suporta vídeos.
-                </video>
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Maria - São Paulo/SP</h3>
-                <p className="text-gray-600">
-                  "Comecei há 2 semanas e já saquei R$ 247,50. É incrível como é simples!"
-                </p>
+                <div id="ifr_68479b77ddec08ed47550ea8_wrapper" style={{ margin: "0 auto", width: "100%" }}>
+                  <div id="headline_68479b77ddec08ed47550ea8_1" className="smartplayer-headline" style={{ textAlign: "center", margin: "0px auto", display: "flex", flexDirection: "column", alignItems: "center", width: "fit-content" }}>
+                    <div style={{ width: "100%", margin: "0px 0px 24px", fontFamily: "Inter", fontSize: "0.888889em", letterSpacing: "1px", lineHeight: "150%", textAlign: "left", color: "black" }}>
+                      <p><strong>Veja o depoimento do Felipe Alves 👇</strong></p>
+                    </div>
+                  </div>
+                  <div style={{ padding: "177.77777777777777% 0 0 0", position: "relative" }} id="ifr_68479b77ddec08ed47550ea8_aspect">
+                    <iframe 
+                      frameBorder="0" 
+                      allowFullScreen 
+                      src="https://scripts.converteai.net/0527b3fd-2e78-41bb-b91e-82ab89752620/players/68479b77ddec08ed47550ea8/embed.html" 
+                      id="ifr_68479b77ddec08ed47550ea8" 
+                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                      referrerPolicy="origin"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl overflow-hidden shadow-lg">
-              <div className="aspect-video">
-                <video 
-                  className="w-full h-full object-cover"
-                  controls
-                  poster="/image/homem.png"
-                >
-                  <source src="/videos/A_hyperrealistic_video_202506031811_pm7ry.mp4" type="video/mp4" />
-                  Seu navegador não suporta vídeos.
-                </video>
+            {/* Outros Vídeos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white rounded-xl overflow-hidden shadow-lg">
+                <div className="aspect-video">
+                  <video 
+                    className="w-full h-full object-cover"
+                    controls
+                    poster="/image/mulher.png"
+                  >
+                    <source src="/videos/A_hyperrealistic_video_202506031816_kdopa.mp4" type="video/mp4" />
+                    Seu navegador não suporta vídeos.
+                  </video>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Maria - São Paulo/SP</h3>
+                  <p className="text-gray-600">
+                    "Comecei há 2 semanas e já saquei R$ 247,50. É incrível como é simples!"
+                  </p>
+                </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">João - Rio de Janeiro/RJ</h3>
-                <p className="text-gray-600">
-                  "Já fiz mais de R$ 1.200 em um mês. Recomendo para todo mundo!"
-                </p>
+
+              <div className="bg-white rounded-xl overflow-hidden shadow-lg">
+                <div className="aspect-video">
+                  <video 
+                    className="w-full h-full object-cover"
+                    controls
+                    poster="/image/homem.png"
+                  >
+                    <source src="/videos/A_hyperrealistic_video_202506031811_pm7ry.mp4" type="video/mp4" />
+                    Seu navegador não suporta vídeos.
+                  </video>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">João - Rio de Janeiro/RJ</h3>
+                  <p className="text-gray-600">
+                    "Já fiz mais de R$ 1.200 em um mês. Recomendo para todo mundo!"
+                  </p>
+                </div>
               </div>
+            </div>
+
+            {/* Depoimentos */}
+            <div className="mt-16">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold text-gray-900">Resultados que falam por si</h2>
+                <p className="text-gray-600 mt-2">Pessoas reais, ganhos reais, histórias reais.</p>
+              </div>
+
+              <TestimonialsCarousel />
             </div>
           </div>
         </div>
